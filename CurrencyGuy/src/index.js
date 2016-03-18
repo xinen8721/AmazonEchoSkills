@@ -28,6 +28,8 @@ var APP_ID = "amzn1.echo-sdk-ams.app.2204f700-c5a6-4a8d-9781-492c60e907a9"; //re
  */
 var AlexaSkill = require('./AlexaSkill');
 var https = require('https');
+var currency_store = require('./currency_store');
+
 /**
  * CurrencyGuy is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
@@ -50,8 +52,8 @@ CurrencyGuy.prototype.eventHandlers.onSessionStarted = function (sessionStartedR
 
 CurrencyGuy.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("CurrencyGuy onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Welcome to the Alexa Skills Kit, you can say hello";
-    var repromptText = "You can say hello";
+    var speechOutput = "Welcome to the Alexa Skills Kit, you can say what is the rate of USD to CNY";
+    var repromptText = "You can ask what is the rate of USD to CNY";
     response.ask(speechOutput, repromptText);
 };
 
@@ -64,28 +66,46 @@ CurrencyGuy.prototype.eventHandlers.onSessionEnded = function (sessionEndedReque
 CurrencyGuy.prototype.intentHandlers = {
     // register custom intent handlers
     "TellRateIntent": function (intent, session, response) {
-        handleTellMeTheRateIntent(session, response);
+        handleTellMeTheRateIntent(intent, session, response);
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("You can say what is the rate of USD to CNY!", "You can say what is the rate of USD to CNY!");
     }
 };
 
-var handleTellMeTheRateIntent = function(session, response) {
-    var url = 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20csv%20where%20url%3D%22http%3A%2F%2Ffinance.yahoo.com%2Fd%2Fquotes.csv%3Fe%3D.csv%26f%3Dnl1d1t1%26s%3Dusdcny%3DX%22%3B&format=json&callback=';
-    getJSONfromYahoo(url, function(data){
-      if(data.query.results.row.col1 !== 'N/A') {
-        var text = data.query.results.row.col1;  
-        var card_text = 'The rate of USD to CNY is ' + text ;
+var handleTellMeTheRateIntent = function(intent, session, response) {
+    var sourceItem = intent.slots.source;
+    var targetItem = intent.slots.target;
 
-        var heading = 'Rate you input';
-      }
-      else {
-        var heading = 'Not found';
-        var card_text = 'Sorry, I didn\'t find a match of your currency';
-      }
-      response.tellWithCard(card_text, heading, card_text);
-    });
+    if(sourceItem.value && targetItem.value){
+        var source = currency_store[sourceItem.value.toLowerCase()];
+        var target = currency_store[targetItem.value.toLowerCase()];
+    }
+
+    if(source && target) {
+        // Set up the whole url with source and target
+        var url_1 = 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20csv%20where%20url%3D%22http%3A%2F%2Ffinance.yahoo.com%2Fd%2Fquotes.csv%3Fe%3D.csv%26f%3Dnl1d1t1%26s%3D';
+        var url_2 = '%3DX%22%3B&format=json&callback=';
+        var url = url_1 + source + target + url_2;
+
+        getJSONfromYahoo(url, function(data){
+          if(data.query.results.row.col1 !== 'N/A') {
+            var text = data.query.results.row.col1;  
+            //var card_text = 'The rate of ' + source + ' to ' + target + ' is ' + text ;
+            var heading = 'Exchange rate of ' + source.toUpperCase() + '/' + target.toUpperCase() ;
+            var card_text = '1 ' + source.toUpperCase() + ' = ' + text + ' ' + target.toUpperCase();
+          }
+          else {
+            var heading = 'Not found';
+            var card_text = 'Sorry, I didn\'t find a match of your currency';
+          }
+          response.tellWithCard(card_text, heading, card_text);
+        });
+    }
+    else{
+        var speechOutput = 'Sorry I did not find the currency you said'
+        response.tellWithCard(speechOutput, "Currency not found", speechOutput);
+    }
 };
 
 var getJSONfromYahoo = function(url, callback){
