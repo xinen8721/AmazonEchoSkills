@@ -1,2 +1,2 @@
-# AmazonEchoSkills
-Amazon Echo Skills Development
+# Amazon Echo Skills
+Amazon Echo Skills Development, TBD...
