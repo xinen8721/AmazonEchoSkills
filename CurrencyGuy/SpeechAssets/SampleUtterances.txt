@@ -1,0 +1,4 @@
+TellMeTheRateIntent tell me the rate of {currency_source} to {currency_target} 
+TellMeTheRateIntent tell the rate of {currency_source} to {currency_target} 
+TellMeTheRateIntent what is the rate of {currency_source} to {currency_target} 
+

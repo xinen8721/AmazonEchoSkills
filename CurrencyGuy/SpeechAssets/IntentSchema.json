@@ -1,0 +1,23 @@
+{
+  "intents": [
+    {
+      "intent": "TellRateIntent",
+      "slots":[
+        {
+          "name": "source",
+          "type": "LIST_OF_CURRENCY"
+        },
+        {
+          "name": "target",
+          "type": "LIST_OF_CURRENCY"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
