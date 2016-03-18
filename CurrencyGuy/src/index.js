@@ -89,11 +89,12 @@ var handleTellMeTheRateIntent = function(intent, session, response) {
         var url = url_1 + source + target + url_2;
 
         getJSONfromYahoo(url, function(data){
-          if(data.query.results.row.col1 !== 'N/A') {
-            var text = data.query.results.row.col1;  
+          if(data.query.results.row.col1 !== 'N/A') {            
+            var val = new Number(data.query.results.row.col1);
+            var result = new String(val.toFixed(2));
             //var card_text = 'The rate of ' + source + ' to ' + target + ' is ' + text ;
             var heading = 'Exchange rate of ' + source.toUpperCase() + '/' + target.toUpperCase() ;
-            var card_text = '1 ' + source.toUpperCase() + ' = ' + text + ' ' + target.toUpperCase();
+            var card_text = '1 ' + source.toUpperCase() + ' = ' + result + ' ' + target.toUpperCase();
           }
           else {
             var heading = 'Not found';

@@ -6,5 +6,17 @@ module.exports = {
 	"u.s dollar" : "usd",
 	"u.s.d." : "usd",
 	"u.s.d" : "usd",
-	"euro" : "eur"
+	"euro" : "eur",
+	"japanese yen" : "jpy",
+	"south korean won" : "krw",
+	"hong kong dollar" : "hkd",
+	"indian rupee" : "inr",
+	"british pound" : "gbp",
+	"australian dollar" : "aud",
+	"swiss franc" : "fr",
+	"turkish lira" : "try",
+	"russian ruble" : "rub",
+	"mexican peso" : "mxn",
+	"swedish krona" : "sek",
+	"thai baht" : "thb"
 };
