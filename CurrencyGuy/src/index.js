@@ -78,8 +78,10 @@ var handleTellMeTheRateIntent = function(intent, session, response) {
     var targetItem = intent.slots.target;
 
     if(sourceItem.value && targetItem.value){
-        var source = currency_store[sourceItem.value.toLowerCase()];
-        var target = currency_store[targetItem.value.toLowerCase()];
+        var tmp1 = sourceItem.value.toLowerCase().replace(/\s+/g, "");
+        var tmp2 = targetItem.value.toLowerCase().replace(/\s+/g, "");
+        var source = currency_store[tmp1.split('.').join('')];
+        var target = currency_store[tmp2.split('.').join('')];
     }
 
     if(source && target) {
@@ -96,15 +98,11 @@ var handleTellMeTheRateIntent = function(intent, session, response) {
             var heading = 'Exchange rate of ' + source.toUpperCase() + '/' + target.toUpperCase() ;
             var card_text = '1 ' + source.toUpperCase() + ' = ' + result + ' ' + target.toUpperCase();
           }
-          else {
-            var heading = 'Not found';
-            var card_text = 'Sorry, I didn\'t find a match of your currency';
-          }
           response.tellWithCard(card_text, heading, card_text);
         });
     }
     else{
-        var speechOutput = 'Sorry I did not find the currency you said'
+        var speechOutput = 'Sorry I did not find the currency you said';
         response.tellWithCard(speechOutput, "Currency not found", speechOutput);
     }
 };
