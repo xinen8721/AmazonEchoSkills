@@ -52,7 +52,7 @@ CurrencyGuy.prototype.eventHandlers.onSessionStarted = function (sessionStartedR
 
 CurrencyGuy.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("CurrencyGuy onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Welcome to the Alexa Skills Kit, you can say what is the rate of USD to CNY";
+    var speechOutput = "Welcome to Currency Guy, you can say what is the rate of USD to CNY";
     var repromptText = "You can ask what is the rate of USD to CNY";
     response.ask(speechOutput, repromptText);
 };
