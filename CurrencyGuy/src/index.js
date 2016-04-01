@@ -52,7 +52,7 @@ CurrencyGuy.prototype.eventHandlers.onSessionStarted = function (sessionStartedR
 
 CurrencyGuy.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("CurrencyGuy onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Welcome to Currency Guy, you can say what is the rate of USD to CNY";
+    var speechOutput = "Welcome to Currency Guy, you can ask me something like what is the rate of USD to CNY";
     var repromptText = "You can ask what is the rate of USD to CNY";
     response.ask(speechOutput, repromptText);
 };
@@ -69,8 +69,23 @@ CurrencyGuy.prototype.intentHandlers = {
         handleTellMeTheRateIntent(intent, session, response);
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("You can say what is the rate of USD to CNY!", "You can say what is the rate of USD to CNY!");
-    }
+        response.ask("You can ask what is the rate of USD to CNY! or find me the rate of AUD to JPY", "You can ask what is the rate of USD to CNY!");
+    },
+    "AMAZON.StopIntent": function (intent, session, response) {
+        var speechOutput = {
+                speech: "Goodbye",
+                type: AlexaSkill.speechOutputType.PLAIN_TEXT
+        };
+        response.tell(speechOutput);
+    },
+
+    "AMAZON.CancelIntent": function (intent, session, response) {
+        var speechOutput = {
+                speech: "Goodbye",
+                type: AlexaSkill.speechOutputType.PLAIN_TEXT
+        };
+        response.tell(speechOutput);
+    }    
 };
 
 var handleTellMeTheRateIntent = function(intent, session, response) {
@@ -96,14 +111,15 @@ var handleTellMeTheRateIntent = function(intent, session, response) {
             var result = new String(val.toFixed(2));
             //var card_text = 'The rate of ' + source + ' to ' + target + ' is ' + text ;
             var heading = 'Exchange rate of ' + source.toUpperCase() + '/' + target.toUpperCase() ;
-            var card_text = '1 ' + source.toUpperCase() + ' = ' + result + ' ' + target.toUpperCase();
+            var card_text = 'Based on ' + data.query.results.row.col2 + ', 1 ' + source.toUpperCase() + ' = ' + result + ' ' + target.toUpperCase();
           }
           response.tellWithCard(card_text, heading, card_text);
         });
     }
     else{
-        var speechOutput = 'Sorry I did not find the currency you said';
-        response.tellWithCard(speechOutput, "Currency not found", speechOutput);
+        var speechOutput = 'Sorry I did not find the currency you said, do you want to try again?';
+        var repromptText = 'You can say what is the rate of USD to CNY or tell me the rate of EUR to USD    !';
+        response.askWithCard(speechOutput, repromptText,"Currency not found", speechOutput);
     }
 };
 
