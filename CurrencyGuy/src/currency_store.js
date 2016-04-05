@@ -3,6 +3,8 @@ module.exports = {
 	"cny" : "cny",
 	"usdollar" : "usd",
 	"usd" : "usd",
+	"canadiandollar" : "cad",
+	"cad" : "cad",
 	"euro" : "eur",
 	"eur" : "eur",
 	"japaneseyen" : "jpy",
